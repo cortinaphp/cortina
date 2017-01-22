@@ -15,14 +15,25 @@ namespace Cortina\ServiceProvider;
 
 use League\Container\ServiceProvider\AbstractServiceProvider;
 
+/**
+ * Default Service Provider for Cortina
+ */
 class DefaultServiceProvider extends AbstractServiceProvider
 {
 
+    /**
+     * Services $this provides
+     * @var array
+     */
     protected $provides = [
         'Request',
         'Response'
     ];
 
+    /**
+     * Register services
+     * @return void
+     */
     public function register()
     {
         $this->getContainer()->add('Request', 'Zend\Diactoros\Request');
