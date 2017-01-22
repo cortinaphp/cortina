@@ -13,7 +13,6 @@
  */
 namespace Cortina;
 
-use \InvalidArgumentException;
 use Cortina\ServiceProvider\DefaultServiceProvider;
 use Interop\Container\ContainerInterface;
 use League\Container\Container;
@@ -58,6 +57,15 @@ class App
         if ($this->container->has($param)) {
             return $this->container->get($param);
         }
+    }
+
+    /**
+     * Get Container
+     * @return \Interop\Container\ContainerInterface
+     */
+    public function getContainer()
+    {
+        return $this->container;
     }
 
     /**
@@ -112,16 +120,7 @@ class App
      */
     public function delete(string $path, callable $callable)
     {
-        $this->router->addRoute('PATCH', $path, $callable);
-    }
-
-    /**
-     * Get Container
-     * @return \Interop\Container\ContainerInterface
-     */
-    public function getContainer()
-    {
-        return $this->container;
+        $this->router->addRoute('DELETE', $path, $callable);
     }
 
 }
