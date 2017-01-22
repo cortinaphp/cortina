@@ -99,7 +99,7 @@ class AppTest extends TestCase
     }
 
     /**
-     * Test add get Route
+     * Test add GET Route
      * @return void
      */
     public function testAddGetRoute()
@@ -115,6 +115,30 @@ class AppTest extends TestCase
             [
                 'GET' => [
                     '/' => $handler
+                ],
+            ],
+            []
+        ];
+        $this->assertSame($app->router->getData(), $expected, 'Can\'t add route as expected');
+    }
+
+    /**
+     * Test add POST Route
+     * @return void
+     */
+    public function testAddPostRoute()
+    {
+        $handler = function (RequestInterface $request, ResponseInterface $response) {
+            return $response;
+        };
+
+        $app = new App();
+        $app->post('/people', $handler);
+
+        $expected = [
+            [
+                'POST' => [
+                    '/people' => $handler
                 ],
             ],
             []
