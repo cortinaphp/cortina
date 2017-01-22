@@ -11,14 +11,13 @@
  * @since         0.0.1
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Cortina\Test\TestCase\ServiceProvider;
+namespace Cortina\Network;
 
-use Cortina\ServiceProvider\DefaultServiceProvider;
-
+use Zend\Diactoros\Response\SapiEmitter as ZendSapiEmitter;
 /**
- * Default Service Provider Test
+ * Default Sapi Emitter
  */
-class DefaultServiceProviderTest extends TestCase
+class SapiEmitter extends ZendSapiEmitter
 {
 
 }

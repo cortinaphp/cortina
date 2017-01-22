@@ -13,9 +13,9 @@
  */
 namespace Cortina;
 
+use Cortina\Container\Container;
 use Cortina\ServiceProvider\DefaultServiceProvider;
 use Interop\Container\ContainerInterface;
-use League\Container\Container;
 
 /**
  * App
