@@ -14,11 +14,11 @@
 namespace Cortina\Test\TestCase;
 
 use Cortina\App;
+use Cortina\Network\Request;
 use PHPUnit\Framework\TestCase;
 use Cortina\Container\Container;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-
 /**
  * App Test
  */
@@ -215,5 +215,24 @@ class AppTest extends TestCase
             []
         ];
         $this->assertSame($app->router->getData(), $expected, 'Can\'t add route as expected');
+    }
+
+    /**
+     * Test Run
+     * @return void
+     */
+    public function testRun()
+    {
+        $request = new Request('/test', 'GET');
+        $app = new App();
+        $app->getContainer()->add('request', $request);
+
+        $app->get('/test', function (RequestInterface $request, ResponseInterface $response) {
+            $response->getBody()->write('Hello World!');
+            return $response;
+        });
+        $response = $app->run(true);
+        $output = (string)$response;
+        $this->assertEquals($output, 'Hello World!');
     }
 }
