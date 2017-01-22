@@ -16,6 +16,7 @@ namespace Cortina;
 
 use League\Container\Container;
 use League\Container\ReflectionContainer;
+use Interop\Container\ContainerInterface;
 
 /**
  * App
@@ -25,21 +26,25 @@ class App
 
     /**
      * Container
-     * @var Interop\Container\ContainerInterface
+     * @var \Interop\Container\ContainerInterface
      */
     protected $_container;
 
     /**
      * Create new App
      */
-    public function __construct()
+    public function __construct($container = [])
     {
-        $this->_container = new Container();
+        if ($container instanceof ContainerInterface) {
+            $this->_container = $container;
+        } else {
+            $this->_container = new Container();
+        }
     }
 
     /**
      * Get Container
-     * @return \Psr\Container\ContainerInterface
+     * @return \Interop\Container\ContainerInterface
      */
     public function getContainer()
     {
