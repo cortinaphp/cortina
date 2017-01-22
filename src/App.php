@@ -74,7 +74,7 @@ class App
      * @param  callable $callable Handler for route
      * @return void
      */
-    public function get($path, callable $callable)
+    public function get(string $path, callable $callable)
     {
         $this->router->addRoute('GET', $path, $callable);
     }
@@ -85,7 +85,7 @@ class App
      * @param  callable $callable Handler for route
      * @return void
      */
-    public function post($path, callable $callable)
+    public function post(string $path, callable $callable)
     {
         $this->router->addRoute('POST', $path, $callable);
     }
@@ -96,7 +96,7 @@ class App
      * @param  callable $callable Handler for route
      * @return void
      */
-    public function put($path, callable $callable)
+    public function put(string $path, callable $callable)
     {
         $this->router->addRoute('PUT', $path, $callable);
     }
@@ -107,7 +107,7 @@ class App
      * @param  callable $callable Handler for route
      * @return void
      */
-    public function patch($path, callable $callable)
+    public function patch(string $path, callable $callable)
     {
         $this->router->addRoute('PATCH', $path, $callable);
     }
@@ -118,7 +118,7 @@ class App
      * @param  callable $callable Handler for route
      * @return void
      */
-    public function delete($path, callable $callable)
+    public function delete(string $path, callable $callable)
     {
         $this->router->addRoute('DELETE', $path, $callable);
     }
