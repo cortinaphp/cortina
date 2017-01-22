@@ -27,7 +27,9 @@ class DefaultServiceProvider extends AbstractServiceProvider
      */
     protected $provides = [
         'request',
-        'response'
+        'response',
+        'emitter',
+        'router',
     ];
 
     /**
@@ -41,9 +43,13 @@ class DefaultServiceProvider extends AbstractServiceProvider
                 $_SERVER, $_GET, $_POST, $_COOKIE, $_FILES
             );
         });
-
         $this->getContainer()->share('response', 'Zend\Diactoros\Response');
         $this->getContainer()->share('emitter', 'Zend\Diactoros\Response\SapiEmitter');
-
+        $this->getContainer()->add('routeParser', 'FastRoute\RouteParser\Std');
+        $this->getContainer()->add('dataGenerator', 'FastRoute\\DataGenerator\\GroupCountBased');
+        $this->getContainer()->add('dispatcher', 'FastRoute\\Dispatcher\\GroupCountBased');
+        $this->getContainer()->add('router', 'FastRoute\RouteCollector')
+            ->withArgument($this->getcontainer()->get('routeParser'))
+            ->withArgument($this->getcontainer()->get('dataGenerator'));
     }
 }
