@@ -14,6 +14,7 @@
 
 namespace App\Test\TestCase;
 
+use Cortina\App;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -22,6 +23,14 @@ use PHPUnit\Framework\TestCase;
 class AppTest extends TestCase
 {
 
-    
+    /**
+     * Test get container method
+     * @return void
+     */
+    public function testGetContainer()
+    {
+        $app = new App();
+        $this->assertInstanceOf('Psr\Container\ContainerInterface', $app->getContainer());
+    }
 
 }
