@@ -15,8 +15,7 @@ namespace Cortina\Test\TestCase;
 
 use Cortina\App;
 use PHPUnit\Framework\TestCase;
-use League\Container\Container;
-use League\Container\Definition\DefinitionFactory;
+use Cortina\Container\Container;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -29,7 +28,7 @@ class AppTest extends TestCase
     /**
      * Test App construct with Container
      */
-    public function testConstructDefinitionFactory()
+    public function testConstructContainer()
     {
         $container = new Container();
         $app = new App($container);
@@ -40,10 +39,10 @@ class AppTest extends TestCase
      * Test App construct with Container
      * @expectedException TypeError
      */
-    public function testConstructDefinitionFactoryException()
+    public function testConstructContaineryException()
     {
-        $invalidDefinitionFactory = new \stdClass();
-        $app = new App($invalidDefinitionFactory);
+        $invalidContainer = new \stdClass();
+        $app = new App($invalidContainer);
     }
 
     /**

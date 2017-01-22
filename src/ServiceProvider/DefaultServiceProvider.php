@@ -14,7 +14,6 @@
 namespace Cortina\ServiceProvider;
 
 use League\Container\ServiceProvider\AbstractServiceProvider;
-use Zend\Diactoros\ServerRequestFactory;
 /**
  * Default Service Provider for Cortina
  */
@@ -38,18 +37,11 @@ class DefaultServiceProvider extends AbstractServiceProvider
      */
     public function register()
     {
-        $this->getContainer()->share('request', function () {
-            return ServerRequestFactory::fromGlobals(
-                $_SERVER, $_GET, $_POST, $_COOKIE, $_FILES
-            );
-        });
-        $this->getContainer()->share('response', 'Zend\Diactoros\Response');
-        $this->getContainer()->share('emitter', 'Zend\Diactoros\Response\SapiEmitter');
-        $this->getContainer()->add('routeParser', 'FastRoute\RouteParser\Std');
-        $this->getContainer()->add('dataGenerator', 'FastRoute\\DataGenerator\\GroupCountBased');
-        $this->getContainer()->add('dispatcher', 'FastRoute\\Dispatcher\\GroupCountBased');
+        $this->getContainer()->share('request', 'Cortina\Network\Request');
+        $this->getContainer()->share('response', 'Cortina\Network\Response');
+        $this->getContainer()->share('emitter', 'Cortina\Network\SapiEmitter');
         $this->getContainer()->add('router', 'FastRoute\RouteCollector')
-            ->withArgument($this->getcontainer()->get('routeParser'))
-            ->withArgument($this->getcontainer()->get('dataGenerator'));
+            ->withArgument(new \FastRoute\RouteParser\Std)
+            ->withArgument(new \FastRoute\DataGenerator\GroupCountBased);
     }
 }
