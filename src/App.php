@@ -60,6 +60,39 @@ class App
     }
 
     /**
+     * Run Cortina
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function run($silentMode)
+    {
+        $routeInfo = $this->dispatcher->dispatch(
+            $this->request->getMethod(),
+            $this->request->getUri()->getPath()
+        );
+        switch ($routeInfo[0]) {
+            case $this->dispatcher::NOT_FOUND:
+                return $this->emitter->safeEmit(
+                    $this->response->getBody()->write('Not found'),
+                    null,
+                    $silentMode
+                );
+            case $this->dispatcher::METHOD_NOT_ALLOWED:
+                $allowedMethods = $routeInfo[1];
+                // ... 405 Method Not Allowed
+                break;
+            case $this->dispatcher::FOUND:
+                $handler = $routeInfo[1];
+                $vars = $routeInfo[2];
+                return $this->emitter->safeEmit(
+                    $handler($this->request, $this->response, $vars),
+                    null,
+                    $silentMode
+                );
+        }
+
+    }
+
+    /**
      * Get Container
      * @return \Interop\Container\ContainerInterface
      */

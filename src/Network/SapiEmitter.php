@@ -13,11 +13,27 @@
  */
 namespace Cortina\Network;
 
+use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\Response\SapiEmitter as ZendSapiEmitter;
 /**
  * Default Sapi Emitter
  */
 class SapiEmitter extends ZendSapiEmitter
 {
+
+    /**
+     * Emit response if not in silent mode
+     * @param  ResponseInterface $response
+     * @param  int               $maxBufferLevel
+     * @param  bool              $silentMode
+     * @return void|\Psr\Http\Message\ResponseInterface
+     */
+    public function safeEmit(ResponseInterface $response, $maxBufferLevel = null, bool $silentMode = null)
+    {
+        if (isset($silentMode) && $silentMode === true) {
+            return $response->getBody();
+        }
+        parent::emit($response);
+    }
 
 }
