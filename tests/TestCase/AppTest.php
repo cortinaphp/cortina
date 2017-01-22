@@ -146,4 +146,28 @@ class AppTest extends TestCase
         $this->assertSame($app->router->getData(), $expected, 'Can\'t add route as expected');
     }
 
+
+    /**
+     * Test add PUT Route
+     * @return void
+     */
+    public function testAddPutRoute()
+    {
+        $handler = function (RequestInterface $request, ResponseInterface $response) {
+            return $response;
+        };
+
+        $app = new App();
+        $app->put('/people/:name', $handler);
+
+        $expected = [
+            [
+                'PUT' => [
+                    '/people/:name' => $handler
+                ],
+            ],
+            []
+        ];
+        $this->assertSame($app->router->getData(), $expected, 'Can\'t add route as expected');
+    }
 }
