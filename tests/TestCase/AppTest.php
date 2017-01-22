@@ -12,7 +12,7 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
-namespace App\Test\TestCase;
+namespace Cortina\Test\TestCase;
 
 use Cortina\App;
 use PHPUnit\Framework\TestCase;
@@ -30,7 +30,7 @@ class AppTest extends TestCase
     public function testGetContainer()
     {
         $app = new App();
-        $this->assertInstanceOf('Psr\Container\ContainerInterface', $app->getContainer());
+        $this->assertInstanceOf('Interop\Container\ContainerInterface', $app->getContainer());
     }
 
 }

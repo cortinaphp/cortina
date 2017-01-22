@@ -6,7 +6,20 @@
             "email": "cortina@rosschater.com"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "Cortina\\": "src"
+        },
+        "files": []
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Cortina\\Test\\": "tests"
+        }
+    },
     "require": {
-        "phpunit/phpunit": "^5.7"
+        "phpunit/phpunit": "^5.7",
+        "league/container": "^2.2",
+        "container-interop/container-interop": "^1.1"
     }
 }
