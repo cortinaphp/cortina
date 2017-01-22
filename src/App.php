@@ -14,9 +14,12 @@
 
 namespace Cortina;
 
-use League\Container\Container;
-use League\Container\ReflectionContainer;
+use \InvalidArgumentException;
+use Cortina\ServiceProvider\DefaultServiceProvider;
 use Interop\Container\ContainerInterface;
+use League\Container\Container;
+use League\Container\Definition\DefinitionFactoryInterface;
+use League\Container\ReflectionContainer;
 
 /**
  * App
@@ -28,18 +31,21 @@ class App
      * Container
      * @var \Interop\Container\ContainerInterface
      */
-    protected $_container;
+    protected $container;
 
     /**
      * Create new App
+     * @param
      */
-    public function __construct($container = [])
+    public function __construct($definitionFactory = null)
     {
-        if ($container instanceof ContainerInterface) {
-            $this->_container = $container;
-        } else {
-            $this->_container = new Container();
+        if (isset($definitionFactory) && !($definitionFactory instanceof DefinitionFactoryInterface)) {
+            $message = 'An invalid DefinitionFactory has been supplied';
+            throw new \InvalidArgumentException($message);
         }
+        $this->container = new Container(null, null, $definitionFactory);
+        $this->getContainer()
+            ->addServiceProvider(new DefaultServiceProvider);
     }
 
     /**
@@ -48,7 +54,7 @@ class App
      */
     public function getContainer()
     {
-        return $this->_container;
+        return $this->container;
     }
 
 }

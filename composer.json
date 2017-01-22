@@ -20,6 +20,7 @@
     "require": {
         "phpunit/phpunit": "^5.7",
         "league/container": "^2.2",
-        "container-interop/container-interop": "^1.1"
+        "container-interop/container-interop": "^1.1",
+        "symfony/http-foundation": "^3.2"
     }
 }

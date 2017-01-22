@@ -17,12 +17,33 @@ namespace Cortina\Test\TestCase;
 use Cortina\App;
 use PHPUnit\Framework\TestCase;
 use League\Container\Container;
+use League\Container\Definition\DefinitionFactory;
 
 /**
  * App Test
  */
 class AppTest extends TestCase
 {
+
+    /**
+     * Test App construct with Container
+     */
+    public function testConstructDefinitionFactory()
+    {
+        $definitionFactory = new DefinitionFactory();
+        $app = new App($definitionFactory);
+        $this->assertInstanceOf('Interop\Container\ContainerInterface', $app->getContainer());
+    }
+
+    /**
+     * Test App construct with Container
+     * @expectedException InvalidArgumentException
+     */
+    public function testConstructDefinitionFactoryException()
+    {
+        $invalidDefinitionFactory = new \stdClass();
+        $app = new App($invalidDefinitionFactory);
+    }
 
     /**
      * Test getContainer() method
@@ -32,21 +53,6 @@ class AppTest extends TestCase
     {
         $app = new App();
         $this->assertInstanceOf('Interop\Container\ContainerInterface', $app->getContainer());
-    }
-
-    /**
-     * Test App construct with Container
-     * @return void
-     */
-    public function testConstructWithContainer()
-    {
-        $container = new Container();
-        $app = new App($container);
-        $this->assertSame(
-            $app->getContainer(),
-            $container,
-            'App can\'t be constructed with a container'
-        );
     }
 
 }
