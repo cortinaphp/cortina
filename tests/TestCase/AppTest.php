@@ -29,14 +29,14 @@ class AppTest extends TestCase
      */
     public function testConstructDefinitionFactory()
     {
-        $definitionFactory = new DefinitionFactory();
-        $app = new App($definitionFactory);
+        $container = new Container();
+        $app = new App($container);
         $this->assertInstanceOf('Interop\Container\ContainerInterface', $app->getContainer());
     }
 
     /**
      * Test App construct with Container
-     * @expectedException InvalidArgumentException
+     * @expectedException TypeError
      */
     public function testConstructDefinitionFactoryException()
     {
@@ -55,6 +55,20 @@ class AppTest extends TestCase
     }
 
     /**
+     * Test get container response
+     * @return void
+     */
+    public function testGetContainerServiceByMagic()
+    {
+        $app = new App();
+        $this->assertInstanceOf(
+            '\Psr\Http\Message\ResponseInterface',
+            $app->response,
+            'App can\'t magic __get container services'
+        );
+    }
+
+    /**
      * Test get container request
      * @return void
      */
@@ -63,7 +77,7 @@ class AppTest extends TestCase
         $app = new App();
         $this->assertInstanceOf(
             '\Psr\Http\Message\RequestInterface',
-            $app->getContainer()->get('Request'),
+            $app->getContainer()->get('request'),
             'Container does not contain valid RequestInterface instance'
         );
     }
@@ -77,7 +91,7 @@ class AppTest extends TestCase
         $app = new App();
         $this->assertInstanceOf(
             '\Psr\Http\Message\ResponseInterface',
-            $app->getContainer()->get('Response'),
+            $app->getContainer()->get('response'),
             'Container does not contain valid ResponseInterface instance'
         );
     }

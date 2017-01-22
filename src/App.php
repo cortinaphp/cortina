@@ -17,8 +17,6 @@ use \InvalidArgumentException;
 use Cortina\ServiceProvider\DefaultServiceProvider;
 use Interop\Container\ContainerInterface;
 use League\Container\Container;
-use League\Container\Definition\DefinitionFactoryInterface;
-use League\Container\ReflectionContainer;
 
 /**
  * App
@@ -36,15 +34,15 @@ class App
      * Create new App
      * @param
      */
-    public function __construct($definitionFactory = null)
+    public function __construct(ContainerInterface $container = null)
     {
-        if (isset($definitionFactory) && !($definitionFactory instanceof DefinitionFactoryInterface)) {
-            $message = 'An invalid DefinitionFactory has been supplied';
-            throw new \InvalidArgumentException($message);
+        if (isset($container)) {
+            $this->container = $container;
+        } else {
+            $this->container = new Container();
         }
-        $this->container = new Container(null, null, $definitionFactory);
-        $this->getContainer()
-            ->addServiceProvider(new DefaultServiceProvider);
+
+        $this->container->addServiceProvider(new DefaultServiceProvider);
     }
 
     /**
@@ -54,6 +52,21 @@ class App
     public function getContainer()
     {
         return $this->container;
+    }
+
+    /**
+     * Magic method for getting services if container has them
+     * @param  string $param
+     * @return mixed
+     */
+    public function __get(string $param)
+    {
+        if (isset($this->$param)) {
+            return $this->$param;
+        }
+        if ($this->container->has($param)) {
+            return $this->container->get($param);
+        }
     }
 
 }

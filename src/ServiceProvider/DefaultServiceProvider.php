@@ -14,7 +14,7 @@
 namespace Cortina\ServiceProvider;
 
 use League\Container\ServiceProvider\AbstractServiceProvider;
-
+use Zend\Diactoros\ServerRequestFactory;
 /**
  * Default Service Provider for Cortina
  */
@@ -26,8 +26,8 @@ class DefaultServiceProvider extends AbstractServiceProvider
      * @var array
      */
     protected $provides = [
-        'Request',
-        'Response'
+        'request',
+        'response'
     ];
 
     /**
@@ -36,7 +36,14 @@ class DefaultServiceProvider extends AbstractServiceProvider
      */
     public function register()
     {
-        $this->getContainer()->add('Request', 'Zend\Diactoros\Request');
-        $this->getContainer()->add('Response', 'Zend\Diactoros\Response');
+        $this->getContainer()->share('request', function () {
+            return ServerRequestFactory::fromGlobals(
+                $_SERVER, $_GET, $_POST, $_COOKIE, $_FILES
+            );
+        });
+
+        $this->getContainer()->share('response', 'Zend\Diactoros\Response');
+        $this->getContainer()->share('emitter', 'Zend\Diactoros\Response\SapiEmitter');
+
     }
 }
