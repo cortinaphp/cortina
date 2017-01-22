@@ -1,0 +1,12 @@
+{
+    "name": "cortina/cortina",
+    "authors": [
+        {
+            "name": "Ross Chater",
+            "email": "cortina@rosschater.com"
+        }
+    ],
+    "require": {
+        "phpunit/phpunit": "^5.7"
+    }
+}
