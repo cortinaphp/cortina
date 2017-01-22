@@ -72,13 +72,17 @@ class App
         switch ($routeInfo[0]) {
             case $this->dispatcher::NOT_FOUND:
                 return $this->emitter->safeEmit(
-                    $this->response->getBody()->write('Not found'),
+                    $this->response->withStatus(404)->getBody()->write('Not found'),
                     null,
                     $silentMode
                 );
             case $this->dispatcher::METHOD_NOT_ALLOWED:
                 $allowedMethods = $routeInfo[1];
-                // ... 405 Method Not Allowed
+                return $this->emitter->safeEmit(
+                    $this->response->withStatus(405)->getBody()->write('Method not allowed'),
+                    null,
+                    $silentMode
+                );
                 break;
             case $this->dispatcher::FOUND:
                 $handler = $routeInfo[1];
