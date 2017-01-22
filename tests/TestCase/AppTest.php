@@ -11,7 +11,6 @@
  * @since         0.0.1
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cortina\Test\TestCase;
 
 use Cortina\App;
@@ -53,6 +52,34 @@ class AppTest extends TestCase
     {
         $app = new App();
         $this->assertInstanceOf('Interop\Container\ContainerInterface', $app->getContainer());
+    }
+
+    /**
+     * Test get container request
+     * @return void
+     */
+    public function testGetContainerRequest()
+    {
+        $app = new App();
+        $this->assertInstanceOf(
+            '\Psr\Http\Message\RequestInterface',
+            $app->getContainer()->get('Request'),
+            'Container does not contain valid RequestInterface instance'
+        );
+    }
+
+    /**
+     * Test get container response
+     * @return void
+     */
+    public function testGetContainerResponse()
+    {
+        $app = new App();
+        $this->assertInstanceOf(
+            '\Psr\Http\Message\ResponseInterface',
+            $app->getContainer()->get('Response'),
+            'Container does not contain valid ResponseInterface instance'
+        );
     }
 
 }
