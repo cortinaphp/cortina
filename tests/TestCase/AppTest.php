@@ -194,4 +194,27 @@ class AppTest extends TestCase
         $this->assertSame($app->router->getData(), $expected, 'Can\'t add route as expected');
     }
 
+    /**
+     * Test add DELETE Route
+     * @return void
+     */
+    public function testAddDeleteRoute()
+    {
+        $handler = function (RequestInterface $request, ResponseInterface $response) {
+            return $response;
+        };
+
+        $app = new App();
+        $app->delete('/people/:name', $handler);
+
+        $expected = [
+            [
+                'DELETE' => [
+                    '/people/:name' => $handler
+                ],
+            ],
+            []
+        ];
+        $this->assertSame($app->router->getData(), $expected, 'Can\'t add route as expected');
+    }
 }
