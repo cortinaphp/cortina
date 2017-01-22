@@ -17,6 +17,8 @@ use Cortina\App;
 use PHPUnit\Framework\TestCase;
 use League\Container\Container;
 use League\Container\Definition\DefinitionFactory;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * App Test
@@ -94,6 +96,30 @@ class AppTest extends TestCase
             $app->getContainer()->get('response'),
             'Container does not contain valid ResponseInterface instance'
         );
+    }
+
+    /**
+     * Test add get Route
+     * @return void
+     */
+    public function testAddGetRoute()
+    {
+        $handler = function (RequestInterface $request, ResponseInterface $response) {
+            return $response;
+        };
+
+        $app = new App();
+        $app->get('/', $handler);
+
+        $expected = [
+            [
+                'GET' => [
+                    '/' => $handler
+                ],
+            ],
+            []
+        ];
+        $this->assertSame($app->router->getData(), $expected, 'Can\'t add route as expected');
     }
 
 }
