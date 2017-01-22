@@ -46,15 +46,6 @@ class App
     }
 
     /**
-     * Get Container
-     * @return \Interop\Container\ContainerInterface
-     */
-    public function getContainer()
-    {
-        return $this->container;
-    }
-
-    /**
      * Magic method for getting services if container has them
      * @param  string $param
      * @return mixed
@@ -67,6 +58,70 @@ class App
         if ($this->container->has($param)) {
             return $this->container->get($param);
         }
+    }
+
+    /**
+     * Add GET route to router
+     * @param  string   $path     e.g. "/profile/:name"
+     * @param  callable $callable Handler for route
+     * @return void
+     */
+    public function get(string $path, callable $callable)
+    {
+        $this->router->addRoute('GET', $path, $callable);
+    }
+
+    /**
+     * Add POST route to router
+     * @param  string   $path     e.g. "/profiles"
+     * @param  callable $callable Handler for route
+     * @return void
+     */
+    public function post(string $path, callable $callable)
+    {
+        $this->router->addRoute('POST', $path, $callable);
+    }
+
+    /**
+     * Add PUT route to router
+     * @param  string   $path     e.g. "/profiles/:name"
+     * @param  callable $callable Handler for route
+     * @return void
+     */
+    public function put(string $path, callable $callable)
+    {
+        $this->router->addRoute('PUT', $path, $callable);
+    }
+
+    /**
+     * Add PATCH route to router
+     * @param  string   $path     e.g. "/profiles/:name"
+     * @param  callable $callable Handler for route
+     * @return void
+     */
+    public function patch(string $path, callable $callable)
+    {
+        $this->router->addRoute('PATCH', $path, $callable);
+    }
+
+    /**
+     * Add DELETE route to router
+     * @param  string   $path     e.g. "/profiles/:name"
+     * @param  callable $callable Handler for route
+     * @return void
+     */
+    public function delete(string $path, callable $callable)
+    {
+        $this->router->addRoute('PATCH', $path, $callable);
+    }
+
+    /**
+     * Get Container
+     * @return \Interop\Container\ContainerInterface
+     */
+    public function getContainer()
+    {
+        return $this->container;
     }
 
 }
