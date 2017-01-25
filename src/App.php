@@ -14,6 +14,7 @@
 namespace Cortina;
 
 use Cortina\Container\Container;
+use Cortina\Middleware\Stack;
 use Cortina\ServiceProvider\DefaultServiceProvider;
 use Interop\Container\ContainerInterface;
 
@@ -87,12 +88,21 @@ class App
             case $this->dispatcher::FOUND:
                 $handler = $routeInfo[1];
                 $vars = $routeInfo[2];
+                $response = $handler($this->request, $this->response, $vars);
+
+                $stack = new Stack();
+                $stack->withMiddleware(new App());
+
+                $response = $stack->process($this->request, $response);
+
                 return $this->emitter->safeEmit(
-                    $handler($this->request, $this->response, $vars),
+                    $response,
                     null,
                     $silentMode
                 );
         }
+
+        return (string)$response->getBody();
 
     }
 
