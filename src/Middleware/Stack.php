@@ -28,14 +28,14 @@ class Stack
     /**
      * Get middleware with index
      * @param  integer $index
-     * @return callable|false
+     * @return callable|null
      */
     public function get($index)
     {
         if (isset($this->middleware[$index])) {
             return $this->middleware[$index];
         }
-        return false;
+        return null;
     }
 
     /**
@@ -53,7 +53,8 @@ class Stack
     }
 
     /**
-     * Remove midleware from the stack
+     * Remove midleware from the stack and rebase the keys
+     * so the middleware stack start from key 0
      * @param  callable $middleware
      * @return $this
      */
@@ -62,6 +63,7 @@ class Stack
         $key = array_search($middleware, $this->middleware);
         if ($key !== false) {
             unset($this->middleware[$key]);
+            $this->middleware = array_values($this->middleware);
         }
         return $this;
     }
