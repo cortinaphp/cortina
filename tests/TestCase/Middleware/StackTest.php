@@ -87,5 +87,4 @@ class StackTest extends TestCase
         $stack->remove($middlewareOne);
         $this->assertSame($middlewareTwo, $stack->get(0));
     }
-
 }
