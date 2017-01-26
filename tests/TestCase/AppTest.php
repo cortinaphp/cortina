@@ -17,8 +17,9 @@ use Cortina\App;
 use Cortina\Network\Request;
 use PHPUnit\Framework\TestCase;
 use Cortina\Container\Container;
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
+
 /**
  * App Test
  */
@@ -53,6 +54,38 @@ class AppTest extends TestCase
     {
         $app = new App();
         $this->assertInstanceOf('Interop\Container\ContainerInterface', $app->getContainer());
+    }
+
+    /**
+     * Test with Middleware
+     * @return void
+     */
+    public function testWithMiddleware()
+    {
+        $geoLocateMiddleware = function (ServerRequestInterface $request, ResponseInterface $response, callable $next) {
+            $request = $request->withAttribute('GEOLOCATE', 'LONDON');
+            return $next($request, $response);
+        };
+
+        $request = new Request([], [], '/city', 'GET');
+        $app = new App();
+        $app->getContainer()->add('request', $request);
+
+        $geoLocateValue = '';
+
+        $app->get(
+            '/city',
+            function (ServerRequestInterface $request, ResponseInterface $response) use (&$geoLocateValue) {
+                $geoLocateValue = $request->getAttribute('GEOLOCATE');
+                return $response;
+            }
+        );
+
+        $app
+            ->withMiddleware($geoLocateMiddleware)
+            ->run(true);
+
+        $this->assertEquals('LONDON', $geoLocateValue);
     }
 
     /**
@@ -103,7 +136,7 @@ class AppTest extends TestCase
      */
     public function testAddGetRoute()
     {
-        $handler = function (RequestInterface $request, ResponseInterface $response) {
+        $handler = function (ServerRequestInterface $request, ResponseInterface $response) {
             return $response;
         };
 
@@ -127,7 +160,7 @@ class AppTest extends TestCase
      */
     public function testAddPostRoute()
     {
-        $handler = function (RequestInterface $request, ResponseInterface $response) {
+        $handler = function (ServerRequestInterface $request, ResponseInterface $response) {
             return $response;
         };
 
@@ -151,7 +184,7 @@ class AppTest extends TestCase
      */
     public function testAddPutRoute()
     {
-        $handler = function (RequestInterface $request, ResponseInterface $response) {
+        $handler = function (ServerRequestInterface $request, ResponseInterface $response) {
             return $response;
         };
 
@@ -175,7 +208,7 @@ class AppTest extends TestCase
      */
     public function testAddPatchRoute()
     {
-        $handler = function (RequestInterface $request, ResponseInterface $response) {
+        $handler = function (ServerRequestInterface $request, ResponseInterface $response) {
             return $response;
         };
 
@@ -199,7 +232,7 @@ class AppTest extends TestCase
      */
     public function testAddDeleteRoute()
     {
-        $handler = function (RequestInterface $request, ResponseInterface $response) {
+        $handler = function (ServerRequestInterface $request, ResponseInterface $response) {
             return $response;
         };
 
@@ -223,11 +256,11 @@ class AppTest extends TestCase
      */
     public function testRun()
     {
-        $request = new Request('/test', 'GET');
+        $request = new Request([], [], '/test', 'GET');
         $app = new App();
         $app->getContainer()->add('request', $request);
 
-        $app->get('/test', function (RequestInterface $request, ResponseInterface $response) {
+        $app->get('/test', function (ServerRequestInterface $request, ResponseInterface $response) {
             $response->getBody()->write('Hello World!');
             return $response;
         });

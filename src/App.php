@@ -14,8 +14,11 @@
 namespace Cortina;
 
 use Cortina\Container\Container;
+use Cortina\Middleware\StackRunner;
 use Cortina\ServiceProvider\DefaultServiceProvider;
 use Interop\Container\ContainerInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * App
@@ -45,6 +48,38 @@ class App
     }
 
     /**
+     * Invoke App
+     * @param  RequestInterface  $request
+     * @param  ResponseInterface $response
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response)
+    {
+        $routeInfo = $this->dispatcher->dispatch(
+            $this->request->getMethod(),
+            $this->request->getUri()->getPath()
+        );
+
+        switch ($routeInfo[0]) {
+            case $this->dispatcher::NOT_FOUND:
+                $response = $response->withStatus(404);
+                $response->getBody()->write('Not found');
+                break;
+            case $this->dispatcher::METHOD_NOT_ALLOWED:
+                $allowedMethods = $routeInfo[1];
+                $response = $response->withStatus(405);
+                $response->getBody()->write('Method not allowed');
+                break;
+            case $this->dispatcher::FOUND:
+                $handler = $routeInfo[1];
+                $vars = $routeInfo[2];
+                $response = $handler($request, $response, $vars);
+        }
+
+        return $response;
+    }
+
+    /**
      * Magic method for getting services if container has them
      * @param  string $param
      * @return mixed
@@ -60,40 +95,45 @@ class App
     }
 
     /**
+     * Add middleware to cloned app and return
+     * @param  callable     $middleware
+     * @return \Cortina\App $app
+     */
+    public function withMiddleware(callable $middleware)
+    {
+        $app = clone $this;
+        $app->stack->add($middleware);
+        return $app;
+    }
+
+    /**
+     * Remove middleware from cloned app and return
+     * @param  callable     $middleware
+     * @return \Cortina\App $app
+     */
+    public function withoutMiddleware(callable $middleware)
+    {
+        $app = clone $this;
+        $app->stack->remove($middleware);
+        return $app;
+    }
+
+    /**
      * Run Cortina
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function run($silentMode)
+    public function run($silentMode = false)
     {
-        $routeInfo = $this->dispatcher->dispatch(
-            $this->request->getMethod(),
-            $this->request->getUri()->getPath()
-        );
-        switch ($routeInfo[0]) {
-            case $this->dispatcher::NOT_FOUND:
-                return $this->emitter->safeEmit(
-                    $this->response->withStatus(404)->getBody()->write('Not found'),
-                    null,
-                    $silentMode
-                );
-            case $this->dispatcher::METHOD_NOT_ALLOWED:
-                $allowedMethods = $routeInfo[1];
-                return $this->emitter->safeEmit(
-                    $this->response->withStatus(405)->getBody()->write('Method not allowed'),
-                    null,
-                    $silentMode
-                );
-                break;
-            case $this->dispatcher::FOUND:
-                $handler = $routeInfo[1];
-                $vars = $routeInfo[2];
-                return $this->emitter->safeEmit(
-                    $handler($this->request, $this->response, $vars),
-                    null,
-                    $silentMode
-                );
-        }
+        // Add \Cortina\App as final invoked layer of middleware
+        // which fires off the routed handler
+        $this->stack->add($this);
 
+        $runner = new StackRunner($this->stack);
+        return $this->emitter->safeEmit(
+            $runner($this->request, $this->response),
+            null,
+            $silentMode
+        );
     }
 
     /**

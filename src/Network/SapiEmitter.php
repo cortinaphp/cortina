@@ -15,6 +15,7 @@ namespace Cortina\Network;
 
 use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\Response\SapiEmitter as ZendSapiEmitter;
+
 /**
  * Default Sapi Emitter
  */
