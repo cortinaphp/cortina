@@ -13,7 +13,7 @@
  */
 namespace Cortina\Network;
 
-use Zend\Diactoros\Request as ZendRequest;
+use Zend\Diactoros\ServerRequest as ZendRequest;
 /**
  * Default Response
  */
