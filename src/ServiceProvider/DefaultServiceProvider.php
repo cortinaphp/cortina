@@ -30,6 +30,7 @@ class DefaultServiceProvider extends AbstractServiceProvider
         'emitter',
         'router',
         'dispatcher',
+        'stack',
     ];
 
     /**
@@ -38,13 +39,14 @@ class DefaultServiceProvider extends AbstractServiceProvider
      */
     public function register()
     {
-        $this->getContainer()->add('request', 'Cortina\Network\Request');
-        $this->getContainer()->add('response', 'Cortina\Network\Response');
-        $this->getContainer()->add('emitter', 'Cortina\Network\SapiEmitter');
+        $this->getContainer()->share('request', 'Cortina\Network\Request');
+        $this->getContainer()->share('response', 'Cortina\Network\Response');
+        $this->getContainer()->share('emitter', 'Cortina\Network\SapiEmitter');
         $this->getContainer()->share('router', 'FastRoute\RouteCollector')
             ->withArgument(new \FastRoute\RouteParser\Std)
             ->withArgument(new \FastRoute\DataGenerator\GroupCountBased);
         $this->getContainer()->share('dispatcher', 'Cortina\Network\Dispatcher')
             ->withArgument($this->getContainer()->get('router'));
+        $this->getContainer()->share('stack', 'Cortina\Middleware\Stack');
     }
 }
