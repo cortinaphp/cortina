@@ -69,7 +69,7 @@ class AppTest extends TestCase
 
         $request = new Request([], [], '/city', 'GET');
         $app = new App();
-        $app->getContainer()->add('request', $request);
+        $app->request = $request;
 
         $geoLocateValue = '';
 
@@ -258,13 +258,14 @@ class AppTest extends TestCase
     {
         $request = new Request([], [], '/test', 'GET');
         $app = new App();
-        $app->getContainer()->add('request', $request);
+        $app->request = $request;
 
         $app->get('/test', function (ServerRequestInterface $request, ResponseInterface $response) {
             $response->getBody()->write('Hello World!');
             return $response;
         });
         $response = $app->run(true);
+
         $output = (string)$response;
         $this->assertEquals($output, 'Hello World!');
     }

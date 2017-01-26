@@ -56,10 +56,9 @@ class App
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response)
     {
         $routeInfo = $this->dispatcher->dispatch(
-            $this->request->getMethod(),
-            $this->request->getUri()->getPath()
+            $request->getMethod(),
+            $request->getUri()->getPath()
         );
-
         switch ($routeInfo[0]) {
             case $this->dispatcher::NOT_FOUND:
                 $response = $response->withStatus(404);
@@ -127,6 +126,7 @@ class App
         // Add \Cortina\App as final invoked layer of middleware
         // which fires off the routed handler
         $this->stack->add($this);
+        $this->stack->add(new \Franzl\Middleware\Whoops\ErrorMiddleware);
 
         $runner = new StackRunner($this->stack);
         return $this->emitter->safeEmit(
