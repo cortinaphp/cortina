@@ -73,7 +73,6 @@ class App
             case $this->dispatcher::FOUND:
                 $handler = $routeInfo[1];
                 $vars = $routeInfo[2];
-
                 $response = $handler($request, $response, $vars);
         }
 
@@ -95,14 +94,24 @@ class App
         }
     }
 
-    public function withMiddleware($middleware)
+    /**
+     * Add middleware to cloned app and return
+     * @param  callable     $middleware
+     * @return \Cortina\App $app
+     */
+    public function withMiddleware(callable $middleware)
     {
         $app = clone $this;
         $app->stack->add($middleware);
         return $app;
     }
 
-    public function withoutMiddleware($middleware)
+    /**
+     * Remove middleware from cloned app and return
+     * @param  callable     $middleware
+     * @return \Cortina\App $app
+     */
+    public function withoutMiddleware(callable $middleware)
     {
         $app = clone $this;
         $app->stack->remove($middleware);
@@ -115,7 +124,8 @@ class App
      */
     public function run($silentMode = false)
     {
-        // Add this as final invoked layer of middleware
+        // Add \Cortina\App as final invoked layer of middleware
+        // which fires off the routed handler
         $this->stack->add($this);
 
         $runner = new StackRunner($this->stack);
