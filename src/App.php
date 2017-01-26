@@ -53,13 +53,12 @@ class App
      * @param  ResponseInterface $response
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
         $routeInfo = $this->dispatcher->dispatch(
-            $this->request->getMethod(),
-            $this->request->getUri()->getPath()
+            $request->getMethod(),
+            $request->getUri()->getPath()
         );
-
         switch ($routeInfo[0]) {
             case $this->dispatcher::NOT_FOUND:
                 $response = $response->withStatus(404);
@@ -76,7 +75,7 @@ class App
                 $response = $handler($request, $response, $vars);
         }
 
-        return $response;
+        return $next($request, $response);
     }
 
     /**
@@ -126,6 +125,7 @@ class App
     {
         // Add \Cortina\App as final invoked layer of middleware
         // which fires off the routed handler
+        $this->stack->add(new \Psr7Middlewares\Middleware\Whoops);
         $this->stack->add($this);
 
         $runner = new StackRunner($this->stack);

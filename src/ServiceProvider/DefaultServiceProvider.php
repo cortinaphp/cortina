@@ -13,6 +13,7 @@
  */
 namespace Cortina\ServiceProvider;
 
+use Cortina\Network\ServerRequestFactory;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 
 /**
@@ -40,7 +41,7 @@ class DefaultServiceProvider extends AbstractServiceProvider
      */
     public function register()
     {
-        $this->getContainer()->share('request', 'Cortina\Network\Request');
+        $this->getContainer()->share('request', ServerRequestFactory::fromGlobals());
         $this->getContainer()->share('response', 'Cortina\Network\Response');
         $this->getContainer()->share('emitter', 'Cortina\Network\SapiEmitter');
         $this->getContainer()->share('router', 'FastRoute\RouteCollector')

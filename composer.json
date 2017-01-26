@@ -25,6 +25,8 @@
         "psy/psysh": "@stable",
         "zendframework/zend-diactoros": "^1.3",
         "symfony/http-kernel": "^3.2",
-        "nikic/fast-route": "^1.1"
+        "nikic/fast-route": "^1.1",
+        "oscarotero/psr7-middlewares": "^3.19",
+        "filp/whoops": "^2.1"
     }
 }
