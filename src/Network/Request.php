@@ -13,12 +13,12 @@
  */
 namespace Cortina\Network;
 
-use Zend\Diactoros\ServerRequest as ZendRequest;
+use Zend\Diactoros\ServerRequest as ZendServerRequest;
 
 /**
  * Default Response
  */
-class Request extends ZendRequest
+class Request extends ZendServerRequest
 {
 
 }
