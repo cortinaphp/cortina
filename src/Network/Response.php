@@ -14,6 +14,7 @@
 namespace Cortina\Network;
 
 use Zend\Diactoros\Response as ZendResponse;
+
 /**
  * Default Response
  */

@@ -14,6 +14,7 @@
 namespace Cortina\ServiceProvider;
 
 use League\Container\ServiceProvider\AbstractServiceProvider;
+
 /**
  * Default Service Provider for Cortina
  */
