@@ -73,10 +73,13 @@ class AppTest extends TestCase
 
         $geoLocateValue = '';
 
-        $app->get('/city', function (ServerRequestInterface $request, ResponseInterface $response, $params) use(&$geoLocateValue) {
-            $geoLocateValue = $request->getAttribute('GEOLOCATE');
-            return $response;
-        });
+        $app->get(
+            '/city',
+            function (ServerRequestInterface $request, ResponseInterface $response) use(&$geoLocateValue) {
+                $geoLocateValue = $request->getAttribute('GEOLOCATE');
+                return $response;
+            }
+        );
 
         $app
             ->withMiddleware($geoLocateMiddleware)
