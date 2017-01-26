@@ -57,5 +57,4 @@ class StackRunnerTest extends TestCase
         $this->assertEquals(429, $response->getStatusCode());
         $this->assertEquals('nice', $response->getHeaderLine('something'));
     }
-
 }
