@@ -60,5 +60,4 @@ class StackRunner
 
         return $response;
     }
-
 }
