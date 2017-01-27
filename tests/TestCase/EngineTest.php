@@ -67,9 +67,8 @@ class EngineTest extends TestCase
             return $next($request, $response);
         };
 
-        $request = new Request([], [], '/city', 'GET');
         $engine = new Engine();
-        $engine->request = $request;
+        $engine->request = new Request([], [], '/city', 'GET');
 
         $geoLocateValue = '';
 
