@@ -21,9 +21,9 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * App
+ * Engine
  */
-class App
+class Engine
 {
 
     /**
@@ -33,7 +33,7 @@ class App
     protected $container;
 
     /**
-     * Create new App
+     * Create new Engine
      * @param
      */
     public function __construct(ContainerInterface $container = null)
@@ -48,7 +48,7 @@ class App
     }
 
     /**
-     * Invoke App
+     * Invoke Engine
      * @param  RequestInterface  $request
      * @param  ResponseInterface $response
      * @return \Psr\Http\Message\ResponseInterface
@@ -59,6 +59,7 @@ class App
             $request->getMethod(),
             $request->getUri()->getPath()
         );
+
         switch ($routeInfo[0]) {
             case $this->dispatcher::NOT_FOUND:
                 $response = $response->withStatus(404);
@@ -96,34 +97,34 @@ class App
     /**
      * Add middleware to cloned app and return
      * @param  callable     $middleware
-     * @return \Cortina\App $app
+     * @return \Cortina\Engine $engine
      */
     public function withMiddleware(callable $middleware)
     {
-        $app = clone $this;
-        $app->stack->add($middleware);
-        return $app;
+        $engine = clone $this;
+        $engine->stack->add($middleware);
+        return $engine;
     }
 
     /**
      * Remove middleware from cloned app and return
      * @param  callable     $middleware
-     * @return \Cortina\App $app
+     * @return \Cortina\Engine $engine
      */
     public function withoutMiddleware(callable $middleware)
     {
-        $app = clone $this;
-        $app->stack->remove($middleware);
-        return $app;
+        $engine = clone $this;
+        $engine->stack->remove($middleware);
+        return $engine;
     }
 
     /**
-     * Run Cortina
+     * Start Cortina
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function run($silentMode = false)
+    public function start($silentMode = false)
     {
-        // Add \Cortina\App as final invoked layer of middleware
+        // Add \Cortina\Engine as final invoked layer of middleware
         // which fires off the routed handler
         $this->stack->add(new \Psr7Middlewares\Middleware\Whoops);
         $this->stack->add($this);
