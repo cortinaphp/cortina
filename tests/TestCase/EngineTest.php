@@ -13,7 +13,7 @@
  */
 namespace Cortina\Test\TestCase;
 
-use Cortina\App;
+use Cortina\Engine;
 use Cortina\Network\Request;
 use PHPUnit\Framework\TestCase;
 use Cortina\Container\Container;
@@ -21,29 +21,29 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * App Test
+ * Engine Test
  */
-class AppTest extends TestCase
+class EngineTest extends TestCase
 {
 
     /**
-     * Test App construct with Container
+     * Test Engine construct with Container
      */
     public function testConstructContainer()
     {
         $container = new Container();
-        $app = new App($container);
-        $this->assertInstanceOf('Interop\Container\ContainerInterface', $app->getContainer());
+        $engine = new Engine($container);
+        $this->assertInstanceOf('Interop\Container\ContainerInterface', $engine->getContainer());
     }
 
     /**
-     * Test App construct with Container
+     * Test Engine construct with Container
      * @expectedException TypeError
      */
     public function testConstructContaineryException()
     {
         $invalidContainer = new \stdClass();
-        $app = new App($invalidContainer);
+        $engine = new Engine($invalidContainer);
     }
 
     /**
@@ -52,8 +52,8 @@ class AppTest extends TestCase
      */
     public function testGetContainer()
     {
-        $app = new App();
-        $this->assertInstanceOf('Interop\Container\ContainerInterface', $app->getContainer());
+        $engine = new Engine();
+        $this->assertInstanceOf('Interop\Container\ContainerInterface', $engine->getContainer());
     }
 
     /**
@@ -68,12 +68,12 @@ class AppTest extends TestCase
         };
 
         $request = new Request([], [], '/city', 'GET');
-        $app = new App();
-        $app->request = $request;
+        $engine = new Engine();
+        $engine->request = $request;
 
         $geoLocateValue = '';
 
-        $app->get(
+        $engine->get(
             '/city',
             function (ServerRequestInterface $request, ResponseInterface $response) use (&$geoLocateValue) {
                 $geoLocateValue = $request->getAttribute('GEOLOCATE');
@@ -81,9 +81,9 @@ class AppTest extends TestCase
             }
         );
 
-        $app
+        $engine
             ->withMiddleware($geoLocateMiddleware)
-            ->run(true);
+            ->start(true);
 
         $this->assertEquals('LONDON', $geoLocateValue);
     }
@@ -94,11 +94,11 @@ class AppTest extends TestCase
      */
     public function testGetContainerServiceByMagic()
     {
-        $app = new App();
+        $engine = new Engine();
         $this->assertInstanceOf(
             '\Psr\Http\Message\ResponseInterface',
-            $app->response,
-            'App can\'t magic __get container services'
+            $engine->response,
+            'Engine can\'t magic __get container services'
         );
     }
 
@@ -108,10 +108,10 @@ class AppTest extends TestCase
      */
     public function testGetContainerRequest()
     {
-        $app = new App();
+        $engine = new Engine();
         $this->assertInstanceOf(
             '\Psr\Http\Message\RequestInterface',
-            $app->getContainer()->get('request'),
+            $engine->getContainer()->get('request'),
             'Container does not contain valid RequestInterface instance'
         );
     }
@@ -122,10 +122,10 @@ class AppTest extends TestCase
      */
     public function testGetContainerResponse()
     {
-        $app = new App();
+        $engine = new Engine();
         $this->assertInstanceOf(
             '\Psr\Http\Message\ResponseInterface',
-            $app->getContainer()->get('response'),
+            $engine->getContainer()->get('response'),
             'Container does not contain valid ResponseInterface instance'
         );
     }
@@ -140,8 +140,8 @@ class AppTest extends TestCase
             return $response;
         };
 
-        $app = new App();
-        $app->get('/', $handler);
+        $engine = new Engine();
+        $engine->get('/', $handler);
 
         $expected = [
             [
@@ -151,7 +151,7 @@ class AppTest extends TestCase
             ],
             []
         ];
-        $this->assertSame($app->router->getData(), $expected, 'Can\'t add route as expected');
+        $this->assertSame($engine->router->getData(), $expected, 'Can\'t add route as expected');
     }
 
     /**
@@ -164,8 +164,8 @@ class AppTest extends TestCase
             return $response;
         };
 
-        $app = new App();
-        $app->post('/people', $handler);
+        $engine = new Engine();
+        $engine->post('/people', $handler);
 
         $expected = [
             [
@@ -175,7 +175,7 @@ class AppTest extends TestCase
             ],
             []
         ];
-        $this->assertSame($app->router->getData(), $expected, 'Can\'t add route as expected');
+        $this->assertSame($engine->router->getData(), $expected, 'Can\'t add route as expected');
     }
 
     /**
@@ -188,8 +188,8 @@ class AppTest extends TestCase
             return $response;
         };
 
-        $app = new App();
-        $app->put('/people/:name', $handler);
+        $engine = new Engine();
+        $engine->put('/people/:name', $handler);
 
         $expected = [
             [
@@ -199,7 +199,7 @@ class AppTest extends TestCase
             ],
             []
         ];
-        $this->assertSame($app->router->getData(), $expected, 'Can\'t add route as expected');
+        $this->assertSame($engine->router->getData(), $expected, 'Can\'t add route as expected');
     }
 
     /**
@@ -212,8 +212,8 @@ class AppTest extends TestCase
             return $response;
         };
 
-        $app = new App();
-        $app->patch('/people/:name', $handler);
+        $engine = new Engine();
+        $engine->patch('/people/:name', $handler);
 
         $expected = [
             [
@@ -223,7 +223,7 @@ class AppTest extends TestCase
             ],
             []
         ];
-        $this->assertSame($app->router->getData(), $expected, 'Can\'t add route as expected');
+        $this->assertSame($engine->router->getData(), $expected, 'Can\'t add route as expected');
     }
 
     /**
@@ -236,8 +236,8 @@ class AppTest extends TestCase
             return $response;
         };
 
-        $app = new App();
-        $app->delete('/people/:name', $handler);
+        $engine = new Engine();
+        $engine->delete('/people/:name', $handler);
 
         $expected = [
             [
@@ -247,7 +247,7 @@ class AppTest extends TestCase
             ],
             []
         ];
-        $this->assertSame($app->router->getData(), $expected, 'Can\'t add route as expected');
+        $this->assertSame($engine->router->getData(), $expected, 'Can\'t add route as expected');
     }
 
     /**
@@ -257,14 +257,14 @@ class AppTest extends TestCase
     public function testRun()
     {
         $request = new Request([], [], '/test', 'GET');
-        $app = new App();
-        $app->request = $request;
+        $engine = new Engine();
+        $engine->request = $request;
 
-        $app->get('/test', function (ServerRequestInterface $request, ResponseInterface $response) {
+        $engine->get('/test', function (ServerRequestInterface $request, ResponseInterface $response) {
             $response->getBody()->write('Hello World!');
             return $response;
         });
-        $response = $app->run(true);
+        $response = $engine->start(true);
 
         $output = (string)$response;
         $this->assertEquals($output, 'Hello World!');
