@@ -126,7 +126,8 @@ class Engine
     {
         // Add the Router / Dispatcher to bottom of stack
         $this->stack->prepend($this);
-        $this->stack->prepend(new \Psr7Middlewares\Middleware\Whoops);
+        $this->stack->append(new \Psr7Middlewares\Middleware\Whoops);
+
 
         $runner = new StackRunner($this->stack);
         return $this->emitter->safeEmit(
