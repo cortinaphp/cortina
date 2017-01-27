@@ -45,9 +45,9 @@ class StackRunnerTest extends TestCase
             return $next($request, $response);
         };
         $stack = new Stack();
-        $stack->add($middlewareOne);
-        $stack->add($middlewareTwo);
-        $stack->add($middlewareThree);
+        $stack->append($middlewareOne);
+        $stack->append($middlewareTwo);
+        $stack->append($middlewareThree);
 
         $runner = new StackRunner($stack);
 

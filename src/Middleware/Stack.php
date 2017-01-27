@@ -26,6 +26,16 @@ class Stack
     private $middleware = [];
 
     /**
+     * Get top of the stack and remove
+     * @return callable|null
+     */
+    public function top()
+    {
+        return $this->get($this->count() - 1);
+    }
+
+
+    /**
      * Get middleware with index
      * @param  integer $index
      * @return callable|null
@@ -39,11 +49,35 @@ class Stack
     }
 
     /**
-     * Add middleware to the stack
+     * Get index of middleware
+     * @param  callable $middleware
+     * @return integer|null
+     */
+    public function getIndex(callable $middleware)
+    {
+        return array_search($middleware, $this->middleware);
+    }
+
+    /**
+     * Prepend middleware to the stack
      * @param callable $middleware
      * @return $this
      */
-    public function add(callable $middleware)
+    public function prepend(callable $middleware)
+    {
+        $key = array_search($middleware, $this->middleware);
+        if ($key === false) {
+            array_unshift($this->middleware, $middleware);
+        }
+        return $this;
+    }
+
+    /**
+     * Append middleware to the stack
+     * @param callable $middleware
+     * @return $this
+     */
+    public function append(callable $middleware)
     {
         $key = array_search($middleware, $this->middleware);
         if ($key === false) {
@@ -66,5 +100,14 @@ class Stack
             $this->middleware = array_values($this->middleware);
         }
         return $this;
+    }
+
+    /**
+     * Count middleware
+     * @return integer
+     */
+    public function count()
+    {
+        return count($this->middleware);
     }
 }

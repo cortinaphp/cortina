@@ -102,7 +102,7 @@ class Engine
     public function withMiddleware(callable $middleware)
     {
         $engine = clone $this;
-        $engine->stack->add($middleware);
+        $engine->stack->append($middleware);
         return $engine;
     }
 
@@ -124,10 +124,9 @@ class Engine
      */
     public function start($silentMode = false)
     {
-        // Add \Cortina\Engine as final invoked layer of middleware
-        // which fires off the routed handler
-        $this->stack->add(new \Psr7Middlewares\Middleware\Whoops);
-        $this->stack->add($this);
+        // Add the Router / Dispatcher to bottom of stack
+        $this->stack->prepend($this);
+        $this->stack->prepend(new \Psr7Middlewares\Middleware\Whoops);
 
         $runner = new StackRunner($this->stack);
         return $this->emitter->safeEmit(

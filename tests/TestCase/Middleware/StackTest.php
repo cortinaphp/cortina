@@ -42,13 +42,14 @@ class StackTest extends TestCase
         };
 
         $stack = new Stack();
-        $stack->add($middlewareOne);
-        $stack->add($middlewareTwo);
-        $stack->add($middlewareThree);
+        $stack->append($middlewareOne);
+        $stack->append($middlewareTwo);
+        $stack->append($middlewareThree);
 
         $this->assertSame($middlewareOne, $stack->get(0));
         $this->assertSame($middlewareTwo, $stack->get(1));
         $this->assertSame($middlewareThree, $stack->get(2));
+        $this->assertSame($middlewareThree, $stack->top());
     }
 
     /**
@@ -62,7 +63,7 @@ class StackTest extends TestCase
             return $next($request, $response);
         };
         $stack = new Stack();
-        $result = $stack->add($middleware);
+        $result = $stack->append($middleware);
         $this->assertSame($stack, $result);
     }
 
@@ -81,8 +82,8 @@ class StackTest extends TestCase
             return $next($request, $response);
         };
         $stack = new Stack();
-        $stack->add($middlewareOne);
-        $stack->add($middlewareTwo);
+        $stack->append($middlewareOne);
+        $stack->append($middlewareTwo);
         $this->assertSame($middlewareOne, $stack->get(0));
         $stack->remove($middlewareOne);
         $this->assertSame($middlewareTwo, $stack->get(0));

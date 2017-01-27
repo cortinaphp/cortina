@@ -52,9 +52,9 @@ class StackRunner
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $middleware = $this->stack->get($this->position);
+        $middleware = $this->stack->top();
         if ($middleware) {
-            $this->position++;
+            $this->stack->remove($middleware);
             return $middleware($request, $response, $this);
         }
 
